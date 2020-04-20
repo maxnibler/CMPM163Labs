@@ -1,0 +1,12 @@
+https://drive.google.com/file/d/16XE5qb54dIWoZMcdF3penCmIpPSNUmoh/view?usp=sharing
+To create the 4th cube I simply replicated the process to create the cool cube. 
+I added the new function after both calls of addCoolCube and changed the position
+so they would both be visible. Even after reading through the handout several times 
+I was unable to determine where the "4 minimum cubes" were supposed to come from. By 
+my understanding of the instructions I should have changed to original green cube, 
+created a new cool cube and then created a third original cube of my own design. I 
+can only see how this would leave me with 3 cubes. After some consideration I decided
+that I probably misunderstood the early instructions and was supposed to still have the
+original green cube for some reason and so I added it back into the code. If this was not
+the correct approach I apologize but I could not figure out the intended cubes from the 
+instructions I received.
