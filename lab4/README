@@ -1,0 +1,4 @@
+24a) u*7 rounded down to the nearest integer
+b) y*7 rounded down to the nearest integer
+c) (.375 * 7, .25 * 7) is (2.625,1.75). So
+   rounded down we get (2,1) and the color white

@@ -9,6 +9,25 @@
         </style>
     </head>
     <body>
+		<script id="vertexShader" type="x-shader/x-vertex">
+		// code for vertex shader
+		varying vec2 vUv;
+		void main() {
+			vUv = uv;
+			vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+			gl_Position = projectionMatrix * modelViewPosition;
+		}
+		</script>
+
+		<script id="fragmentShader" type="x-shader/x-fragment">
+		// code for fragment shader
+		uniform sampler2D texture1;
+		varying vec2 vUv;
+		void main() {
+			gl_FragColor = texture2D(texture1, vUv);
+		}
+		</script>
+
         <script src="../three.js-master/build/three.js"></script>
         <script>
             // setup the scene
@@ -20,20 +39,116 @@
             document.body.appendChild(renderer.domElement);
             camera.position.z = 5;
             
+			var material2, mesh2, geometry2;
+			
+			function addTileCube(){
+				var uniforms = {texture1: { type: "t", value: 
+						THREE.ImageUtils.loadTexture("196.jpg")}};
+				geometry2 = new THREE.BoxGeometry(1, 1, 1);
+				material2 = new THREE.ShaderMaterial({
+					uniforms: uniforms,
+					vertexShader: document.getElementById('vertexShader').textContent,
+					fragmentShader: document.getElementById('fragmentShader').textContent
+				});
+				mesh2 = new THREE.Mesh(geometry2, material2);
+				mesh2.position.y = 2;
+				scene.add(mesh2);
+			}
+			
+			var geometry1, material1, mesh1;
+
+			function addTextureShaderCube() {
+				if(count == 2) {
+					var uniforms = {texture1: { type: "t", value: 
+						THREE.ImageUtils.loadTexture("155.jpg")}};
+    
+					geometry1 = new THREE.BoxGeometry(1, 1, 1);
+					material1 =  new THREE.ShaderMaterial({
+						uniforms: uniforms,
+						fragmentShader: fshader,
+						vertexShader: vshader,
+						precision: "mediump"});
+
+					mesh1 = new THREE.Mesh(geometry1, material1);
+					mesh1.position.x = 2;
+					scene.add(mesh1);
+				}
+			}
+
+			
+			//Load Shader Code
+			THREE.Cache.enabled = true;
+			var count = 0;
+			var loader = new THREE.FileLoader();
+			var fshader, vshader;
+
+			loader.load('shaders/vertexShader.vert',
+				// onLoad callback
+				function (data) {
+                console.log(data); // output the text to the console
+					vshader = data;
+					count += 1;
+					addTextureShaderCube(); // we will write this method
+				},
+				// onProgress callback
+				function (xhr) {
+					console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+				},
+				// onError callback
+				function (err) {
+					console.error('An error happened');
+			});
+
+			loader.load('shaders/fragmentShader.frag',
+				// onLoad callback
+				function (data) {
+					console.log(data); // output the text to the console
+					fshader = data;
+					count += 1;
+					addTextureShaderCube(); // we will write this method
+				},
+				// onProgress callback
+				function (xhr) {
+					console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+				},
+				// onError callback
+				function (err) {
+					console.error('An error happened');
+			});
+
+
+
             // setup the cube
 			var geometry = new THREE.BoxGeometry();
-            var material = new THREE.MeshPhongMaterial( { color: 0x00ff00 } );
+			var normMap = THREE.ImageUtils.loadTexture("155_norm.jpg");
+			var texture = THREE.ImageUtils.loadTexture("155.jpg");
+            var material = new THREE.MeshPhongMaterial({map: texture, normalMap: normMap});
             var cube = new THREE.Mesh(geometry, material);
             scene.add(cube);
+			addTileCube();
+			
+			material = new THREE.MeshPhongMaterial( { map: texture });
+			var cube2 = new THREE.Mesh(geometry, material);
+			scene.add(cube2);
+			cube2.position.x -= 2;
+
 
             // add the light
             var light = new THREE.PointLight(0xffffff, 1, 1000);
             light.position.set(10, 10, 10);
             scene.add(light);
-
+			
+			function animateLight(){
+				if(light.position.x <= -10){
+					light.position.set(10,10,10);
+				}else{
+					light.position.set(light.position.x - 0.03, light.position.y + .001, light.position.z);
+				}
+			}
             function animate() {
                 requestAnimationFrame(animate);
                 renderer.render(scene, camera);
+				animateLight();
             }
             animate();
         </script>
