@@ -13,7 +13,7 @@
 		// code for vertex shader
 		varying vec2 vUv;
 		void main() {
-			vUv = uv;
+			vUv = uv*2.0;
 			vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
 			gl_Position = projectionMatrix * modelViewPosition;
 		}
@@ -24,7 +24,7 @@
 		uniform sampler2D texture1;
 		varying vec2 vUv;
 		void main() {
-			gl_FragColor = texture2D(texture1, vUv);
+			gl_FragColor = texture2D(texture1, mod(vUv, 1.0));
 		}
 		</script>
 
