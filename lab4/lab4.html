@@ -127,12 +127,19 @@
             scene.add(cube);
 			addTileCube();
 			
+			
+			normMap = THREE.ImageUtils.loadTexture("196_norm.jpg");
+			texture = THREE.ImageUtils.loadTexture("196.jpg");
+            var cube5 = new THREE.Mesh(geometry, material);
+            scene.add(cube5);
+			cube5.position.y -= 2;
+			
 			material = new THREE.MeshPhongMaterial( { map: texture });
 			var cube2 = new THREE.Mesh(geometry, material);
 			scene.add(cube2);
 			cube2.position.x -= 2;
 
-
+			
             // add the light
             var light = new THREE.PointLight(0xffffff, 1, 1000);
             light.position.set(10, 10, 10);
@@ -142,7 +149,7 @@
 				if(light.position.x <= -10){
 					light.position.set(10,10,10);
 				}else{
-					light.position.set(light.position.x - 0.03, light.position.y + .001, light.position.z);
+					light.position.set(light.position.x - 0.03, light.position.y + .006, light.position.z - .01);
 				}
 			}
             function animate() {
