@@ -1,1 +1,12 @@
 https://drive.google.com/file/d/1VcTsWd2noqwDjI8hel1lEq2Son1BBX7l/view?usp=sharing
+https://drive.google.com/file/d/1y79GzHgHFTSTfU6HDrTV4CninWG8Ieoi/view?usp=sharing
+https://drive.google.com/file/d/1oVZuz9I7DFN-jSE3ov0Ym7uaPUm2ETbI/view?usp=sharing
+Using the base scene given I was curious what would happen if I used the random
+function to effectively slow down the particle effect without editting the particle
+values themselves. This created a stuttering effect that I actually kind of liked 
+as it made the partcles appear as though they were not moving at a consistent speed.
+Then I wanted to create a delayed effect so I added a count variable and only applied
+acceleration to the x velocity until it had counted up. This had an unintended effect
+of creating a concentrated disk of partcles that only had x acceleration while the
+rest moved normally. I liked the result so I added the finishing touches of applying
+the color and sprite from part a to make it more visually appealing.

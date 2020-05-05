@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Lab 5a: Choose Your Own Particle Adventure</title>
+        <title>Lab 5b: Choose Your Own Particle Adventure</title>
         <style>
             body { margin: 0; }
             canvas { display: block; }
@@ -12,81 +12,66 @@
         <script src="../three.js-master/build/three.js"></script>
         <script>
             // setup the scene
-            var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(75, 
+			var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75,
 			  window.innerWidth/window.innerHeight, 0.1, 1000);
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
             camera.position.z = 60;
-			
-			var vertices = [];
 
-			for ( var i = 0; i < 1000; i ++ ) {
-				var x = THREE.MathUtils.randFloatSpread( 500 );
-				var y = THREE.MathUtils.randFloatSpread( 500 );
-				var z = THREE.MathUtils.randFloatSpread( 100 );
-				vertices.push( x, y, z );
+			particles = []
+			const geo = new THREE.Geometry()
+			for(let i=0; i<1000; i++) {
+				const particle = {
+					position: new THREE.Vector3(
+					Math.random() * 2 - 1,
+					Math.random() * 2 - 1,
+					Math.random() * 3 - 3),
+					velocity: new THREE.Vector3(
+					Math.random() * .02 - .01,
+					0.06,
+					Math.random() * .02 - .01),
+					acceleration: new THREE.Vector3(
+					Math.random() * .002 - .001, 
+					Math.random() * .002 - .001, 
+					0),
+				}
+				particles.push(particle);
+				geo.vertices.push(particle.position)
 			}
-
-			var geometry = new THREE.BufferGeometry();
-			geometry.setAttribute( 'position', new 
-			  THREE.Float32BufferAttribute(vertices, 3));
-
 			var sprite = new THREE.TextureLoader().load('disc.png');
-			var material = new THREE.PointsMaterial( { size: 20, 
-			  sizeAttenuation: false, map: sprite, alphaTest: 0.5, 
+			const mat = new THREE.PointsMaterial( { size: 1, 
+			  sizeAttenuation: true, map: sprite, alphaTest: 0.5, 
 			  transparent: true } );
-			material.color.setHSL( 1.0, 0.3, 0.7 );
-			
-			var points = new THREE.Points(geometry, material);
-			scene.add(points);
-
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
-			var mouseX = 0;
-			var mouseY = 0;
-
-			function onDocumentMouseMove(event) {
-				mouseX = event.clientX - windowHalfX;
-				mouseY = event.clientY - windowHalfY;
-			}
-
-			function onDocumentTouchStart(event) {
-				if (event.touches.length == 1) {
-					event.preventDefault();
-					mouseX = event.touches[0].pageX - windowHalfX;
-					mouseY = event.touches[0].pageY - windowHalfY;
-				}
-			}
-
-			function onDocumentTouchMove(event) {
-				if (event.touches.length == 1) {
-					event.preventDefault();
-					mouseX = event.touches[0].pageX - windowHalfX;
-					mouseY = event.touches[0].pageY - windowHalfY;
-				}
-			}
-
-			document.addEventListener('mousemove', onDocumentMouseMove, 
-			  false);
-			document.addEventListener('touchstart', onDocumentTouchStart, 
-			  false);
-			document.addEventListener('touchmove', onDocumentTouchMove, 
-			  false);
+			mat.color.setHSL( 1.0, 0.3, 0.7 );
+			mesh = new THREE.Points(geo,mat);
+			mesh.position.z = -4;
+			scene.add(mesh);
 
 			
-            function animate() {
-                requestAnimationFrame(animate);
-                renderer.render(scene, camera);
-				camera.position.x += (mouseX - camera.position.x) * 0.0005;
-				camera.position.y += (-mouseY - camera.position.y) * 0.0005;
+			function animate() {
 				var time = Date.now() * 0.00005;
 				var h = (360 * (1.0 + time) % 360) / 360;
-				material.color.setHSL(h, 0.5, 0.5);
+				mat.color.setHSL(h, 0.5, 0.5);
+				var count = 0;
+				particles.forEach(p => {
+					count++;
+					if (count > 500){
+						p.velocity.y += p.acceleration.y;
+						p.velocity.z += p.acceleration.z;
+					}
+					if(Math.random() <= .5){
+						p.velocity.x += p.acceleration.x;
+						p.position.add(p.velocity);
+					}
+				});
+				mesh.geometry.verticesNeedUpdate = true;
 
-            }
-            animate();
+				requestAnimationFrame(animate);
+				renderer.render(scene, camera);
+			}
+			animate();
         </script>
     </body>
 </html>
